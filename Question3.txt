@@ -1,0 +1,36 @@
+# Question 3
+
+## Integrate relevant indicators
+I did that in the previous question.
+
+## Analysis where 50% of the population adopts EVs
+I assumed that if 50% of the population adopts EVs, the CO2 emissions from transport would be reduced by half as well. This reduction would then be used to reestimate the predictions.
+
+<<dd_do>>
+    use Question2.dta, clear
+
+    replace valorEN_CO2_TRAN_ZS = valorEN_CO2_TRAN_ZS*.5
+    predict scenario2, xb
+<</dd_do>>
+
+## Identify the countries with the most significant reductions of CO2
+Costa Rica would be the country with the highest reductions with a 700% reduction, followed by Ecuador (61%) and Guatemala (47%).
+
+<<dd_do>>
+
+    tabstat yhat_complete scenario2, stat(mean) save f(%10.0fc) by(CountryName)
+
+    noisily di in g "La reducción de un 50% en las emisiones de CO2 del transporte resulta en una disminución de " ///
+        in y %10.0fc r(StatTotal)[1,1] in g " kt de CO2 equivalente a " in y %10.0fc r(StatTotal)[1,2] in g " kt de CO2 equivalente " ///
+        in y %7.2fc ((r(StatTotal)[1,2]-r(StatTotal)[1,1])/r(StatTotal)[1,1])*100 "%."
+
+    ** 5. Analyze results **
+    forvalues k=1(1)11 {
+        noisily di in g r(name`k') " reduciría sus emisiones de CO2 en " ///
+        in y %10.0fc r(Stat`k')[1,1] in g " kt de CO2 equivalente a " in y %10.0fc r(Stat`k')[1,2] in g " kt de CO2 equivalente " ///
+        in y %7.2fc ((r(Stat`k')[1,2]-r(Stat`k')[1,1])/r(Stat`k')[1,1])*100 "%."
+    }
+<</dd_do>>
+
+## Discuss the assumptions
+The model hasn't been properly calibrated, nor has it been thoroughly researched. Numerous considerations are needed to avoid omitted variables; no structural changes have been implemented to account for temporal differences, and many other necessary considerations have not been addressed.
